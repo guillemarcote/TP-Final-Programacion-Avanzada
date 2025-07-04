@@ -176,7 +176,7 @@ h2 {
   align-items: center;
   gap: 1rem;
   margin-top: 1rem;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .pagination button {
