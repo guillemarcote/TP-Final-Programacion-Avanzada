@@ -1,12 +1,8 @@
 <nav class="navbar">
-  <div class="nav-title">Gestión de Productos</div>
-
-  <div class="nav-links">
-    @if (isLoggedIn()){
-
-        <button (click)="logout()">Cerrar sesión</button>
-    }
-  </div>
+  <div class="navbar-logo">Mi Tienda</div>
+  <ul class="navbar-links">
+    <li><a (click)="logout()">Cerrar sesión</a></li>
+  </ul>
 </nav>
 
 <hr />

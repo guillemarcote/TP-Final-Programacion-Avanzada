@@ -1,26 +1,28 @@
-<button (click)="logout()">Cerrar sesión</button>
-
-<p *ngIf="auth.isAdmin()">¡Bienvenido administrador!</p>
-<p *ngIf="auth.isComprador()">¡Hola comprador!</p>
+<div class="saludo">
+  <p *ngIf="auth.isAdmin()">👑 Bienvenido <strong>administrador</strong></p>
+  <p *ngIf="auth.isComprador()">🛍️ Hola <strong>comprador</strong>, elegí tus productos</p>
+</div>
 
 
 <!-- Lista de productos -->
 <h2>Lista de productos</h2>
-<ul>
-  <li *ngFor="let producto of productos">
-    {{ producto.nombre }} - ${{ producto.precio }}
+<ul class="producto-lista">
+  <li *ngFor="let producto of productosPagina">
+    <div class="producto-info">
+      <h4>{{ producto.nombre }}</h4>
+      <p>${{ producto.precio }}</p>
+    </div>
 
-    <!-- Acciones solo para admin -->
-    <button *ngIf="auth.isAdmin()" (click)="editarProducto(producto)">Editar</button>
-    <button *ngIf="auth.isAdmin()" (click)="eliminarProducto(producto.id)">Eliminar</button>
-
-    <!-- Acción solo para comprador -->
-    <button *ngIf="auth.isComprador()" (click)="agregarAlCarrito(producto)">Agregar al carrito</button>
+    <div class="producto-botones">
+      <button *ngIf="auth.isAdmin()" class="edit-btn" (click)="editarProducto(producto)">✏️</button>
+      <button *ngIf="auth.isAdmin()" (click)="eliminarProducto(producto.id)">🗑️</button>
+      <button *ngIf="auth.isComprador()" (click)="agregarAlCarrito(producto)">🛒</button>
+    </div>
   </li>
 </ul>
 
-<div *ngIf="!cargando && productosPagina.length === 0">
-  No hay productos para mostrar.
+<div *ngIf="!cargando && productosPagina.length === 0" class="no-productos">
+  🚫 No hay productos para mostrar.
 </div>
 
 <!-- Paginación -->
@@ -41,49 +43,63 @@
 <!-- Formulario para agregar/editar (igual que antes) -->
 <!-- Solo los admins pueden agregar productos -->
 <div *ngIf="auth.isAdmin()">
-  <h2>Cargar nuevo producto</h2>
+  <h2><span style="font-size: 1.4rem;">🆕</span> Cargar nuevo producto</h2>
+
   <!-- formulario aquí -->
-   <form (ngSubmit)="guardarProducto()" class="mt-4">
-  <label class="form-label">
-    Nombre:
-    <input type="text" [(ngModel)]="productoModel.nombre" name="nombre" required class="form-control" />
-  </label>
-  <br />
+  <form (ngSubmit)="guardarProducto()" class="mt-4">
+    <label class="form-label">
+      Nombre:
+      <input type="text" [(ngModel)]="productoModel.nombre" name="nombre" required class="form-control" />
+    </label>
+    <br />
 
-  <label class="form-label">
-    Descripción:
-    <textarea [(ngModel)]="productoModel.descripcion" name="descripcion" required class="form-control"></textarea>
-  </label>
-  <br />
+    <label class="form-label">
+      Descripción:
+      <textarea [(ngModel)]="productoModel.descripcion" name="descripcion" required class="form-control"></textarea>
+    </label>
+    <br />
 
-  <label class="form-label">
-    Precio:
-    <input type="number" [(ngModel)]="productoModel.precio" name="precio" min="0" step="0.01" required class="form-control"/>
-  </label>
-  <br />
+    <label class="form-label">
+      Precio:
+      <input type="number" [(ngModel)]="productoModel.precio" name="precio" min="0" step="0.01" required
+        class="form-control" />
+    </label>
+    <br />
 
-  <label class="form-label">
-    Stock:
-    <input type="number" [(ngModel)]="productoModel.stock" name="stock" min="0" required class="form-control"/>
-  </label>
-  <br />
+    <label class="form-label">
+      Stock:
+      <input type="number" [(ngModel)]="productoModel.stock" name="stock" min="0" required class="form-control" />
+    </label>
+    <br />
 
-  <button type="submit" class="btn btn-primary">{{ editando ? 'Actualizar' : 'Agregar' }}</button>
-  <button type="button" (click)="limpiarFormulario()" class="btn btn-secondary ms-2">Cancelar</button>
-</form>
+    <button type="submit" class="btn btn-primary">{{ editando ? 'Actualizar' : 'Agregar' }}</button>
+    <button type="button" (click)="limpiarFormulario()" class="btn btn-secondary ms-2">Cancelar</button>
+  </form>
 </div>
 
 
-<div *ngIf="carrito.length > 0">
-  <h3>🛒 Carrito</h3>
-  <ul>
-    <li *ngFor="let item of carrito">
-      {{ item.nombre }} - ${{ item.precio }}
-    </li>
-  </ul>
+<div *ngIf="carrito.length > 0" class="carrito-container">
+  <h3>🛒 Carrito de Compras</h3>
 
-  <p><strong>Total: ${{ getTotalCarrito() }}</strong></p>
+  <div class="carrito-grid">
+    <div class="carrito-card" *ngFor="let item of carrito; let i = index">
+      <img [src]="item.imagen || defaultImage" alt="{{ item.nombre }}" />
+      <div class="carrito-info">
+        <h4>{{ item.nombre }}</h4>
+        <p>$ {{ item.precio }}</p>
+        <button class="btn-icon" (click)="quitarDelCarrito(i)" title="Quitar del carrito">
+          🗑️
+        </button>
+      </div>
+    </div>
 
-  <button (click)="vaciarCarrito()">Vaciar carrito</button>
-  <button (click)="comprar()">Comprar</button>
+  </div>
+
+  <div class="carrito-total">
+    <p>Total: ${{ getTotalCarrito() }}</p>
+    <div class="carrito-buttons">
+      <button (click)="vaciarCarrito()">Vaciar carrito</button>
+      <button (click)="comprar()">Comprar</button>
+    </div>
+  </div>
 </div>

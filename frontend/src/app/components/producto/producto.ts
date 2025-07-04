@@ -20,6 +20,7 @@ export class ProductosComponent implements OnInit {
   error: string | null = null;
 
   carrito: any[] = [];
+  defaultImage = 'https://rockcontent.com/es/wp-content/uploads/sites/3/2019/02/o-que-e-produto-no-mix-de-marketing-1024x538.png.webp';
 
   // Paginación
   paginaActual = 1;
@@ -107,21 +108,33 @@ export class ProductosComponent implements OnInit {
 
   agregarAlCarrito(producto: any): void {
     this.carrito.push(producto);
-    alert(`${producto.nombre} fue agregado al carrito`);
   }
 
   getTotalCarrito(): number {
-    return this.carrito.reduce((total, item) => total + item.precio, 0);
+    return this.carrito.reduce((total, item) => total + parseFloat(item.precio), 0);
   }
 
   vaciarCarrito(): void {
     this.carrito = [];
   }
 
-  comprar(): void {
-    alert(`¡Compra realizada por $${this.getTotalCarrito()}!`);
-    this.vaciarCarrito();
+  quitarDelCarrito(index: number): void {
+    this.carrito.splice(index, 1);
   }
+
+comprar() {
+  this.productoService.comprarProductos(this.carrito).subscribe({
+    next: () => {
+      alert('¡Compra realizada con éxito!');
+      this.vaciarCarrito();
+      this.cargarProductos(); // refrescar lista con stock actualizado
+    },
+    error: (err) => {
+      console.error(err);
+      alert('Ocurrió un error al realizar la compra.');
+    }
+  });
+}
 
   logout() {
     this.auth.logout();
