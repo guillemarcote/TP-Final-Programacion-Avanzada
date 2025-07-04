@@ -1,0 +1,14 @@
+<nav class="navbar">
+  <div class="nav-title">Gestión de Productos</div>
+
+  <div class="nav-links">
+    @if (isLoggedIn()){
+
+        <button (click)="logout()">Cerrar sesión</button>
+    }
+  </div>
+</nav>
+
+<hr />
+
+<router-outlet></router-outlet>
