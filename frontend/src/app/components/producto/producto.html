@@ -11,12 +11,13 @@
     <div class="producto-info">
       <h4>{{ producto.nombre }}</h4>
       <p>${{ producto.precio }}</p>
+      <p style="color: red;">Stock: {{producto.stock}}</p>
     </div>
 
     <div class="producto-botones">
       <button *ngIf="auth.isAdmin()" class="edit-btn" (click)="editarProducto(producto)">✏️</button>
       <button *ngIf="auth.isAdmin()" (click)="eliminarProducto(producto.id)">🗑️</button>
-      <button *ngIf="auth.isComprador()" (click)="agregarAlCarrito(producto)">🛒</button>
+      <button *ngIf="auth.isComprador() && producto.stock > 0" (click)="agregarAlCarrito(producto)">🛒</button>
     </div>
   </li>
 </ul>

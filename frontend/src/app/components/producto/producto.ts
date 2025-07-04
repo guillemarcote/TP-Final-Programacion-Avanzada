@@ -5,6 +5,7 @@ import { Producto, ProductoService } from '../../services/producto/producto.serv
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-productos',
@@ -30,7 +31,7 @@ export class ProductosComponent implements OnInit {
   productoModel: Producto = { nombre: '', descripcion: '', precio: 0, stock: 0 };
   editando = false;
 
-  constructor(private productoService: ProductoService, private router: Router, public auth: AuthService) { }
+  constructor(private productoService: ProductoService, private router: Router, public auth: AuthService,private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.cargarProductos();
@@ -107,6 +108,12 @@ export class ProductosComponent implements OnInit {
 
 
   agregarAlCarrito(producto: any): void {
+    this.snackBar.open('Producto agregado al carrito', 'Cerrar', {
+      duration: 3000,
+      panelClass: ['snackbar-info'],
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom',
+    });
     this.carrito.push(producto);
   }
 
@@ -125,13 +132,24 @@ export class ProductosComponent implements OnInit {
 comprar() {
   this.productoService.comprarProductos(this.carrito).subscribe({
     next: () => {
-      alert('¡Compra realizada con éxito!');
+      this.snackBar.open('¡Compra realizada con éxito!', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-success'],
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+      });
       this.vaciarCarrito();
       this.cargarProductos(); // refrescar lista con stock actualizado
     },
     error: (err) => {
       console.error(err);
-      alert('Ocurrió un error al realizar la compra.');
+      this.snackBar.open('Ocurrió un error al realizar la compra.', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-error'],
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+      });
+
     }
   });
 }
